@@ -44,6 +44,10 @@ class Game {
     }
   };
 
+  checkValidSelection = (x, y) => {
+    return this.gameBoard.grid[x][y] == null;
+  };
+
   checkWinner = () => {
     for (let i = 0; i < this.gameBoard.grid.length; i++) {
       for (let j = 0; j < this.gameBoard.grid[0].length; j++) {
