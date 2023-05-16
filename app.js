@@ -158,3 +158,40 @@ class Game {
     }
   };
 }
+
+class HeaderFactory {
+  createHeader() {
+    const headerContainer = document.createElement('nav');
+    headerContainer.className = 'header-container';
+    const header = document.createElement('div');
+    header.className = 'header';
+    header.innerText = 'Tic Tac Toe';
+    headerContainer.appendChild(header);
+    return headerContainer;
+  }
+}
+
+class GameBoardFactory {}
+
+class FooterFactory {
+  createFooter() {
+    const footerContainer = document.createElement('footer');
+    footerContainer.className = 'footer';
+    const footer = document.createElement('p');
+    footer.innerHTML = 'Copyright © 2023 pdtru ';
+    footerContainer.appendChild(footer);
+    const github = document.createElement('a');
+    github.href = 'https://github.com/pdtru';
+    footer.appendChild(github);
+    const githubIcon = document.createElement('i');
+    githubIcon.className = 'fa-brands fa-github';
+    github.appendChild(githubIcon);
+    return footerContainer;
+  }
+}
+
+const body = document.body;
+const header = new HeaderFactory();
+const footer = new FooterFactory();
+
+body.append(header.createHeader(), footer.createFooter());
