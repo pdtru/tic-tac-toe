@@ -108,6 +108,11 @@ class Game {
       this.currentPlayer.value
     );
     this.render();
+    this.nextPlayer();
+    this.checkWinner();
+    if (this.checkTie()) {
+      alert('Tie!');
+    }
   };
 
   nextPlayer = () => {
@@ -118,13 +123,36 @@ class Game {
     }
   };
 
-  checkWinner = () => {
+  checkTie = () => {
     for (let i = 0; i < this.gameBoard.grid.length; i++) {
-      for (let j = 0; j < this.gameBoard.grid[0].length; j++) {
-        if (this.gameBoard.grid[i][j] !== null) {
-          let count = 1;
+      for (let j = 0; j < this.gameBoard.grid.length; j++) {
+        if (this.gameBoard.grid[i][j].gamePiece == null) {
+          return false;
         }
       }
+    }
+    return true;
+  };
+
+  checkWinner = () => {
+    let win = this.checkVertical();
+    if (win !== null) {
+      alert(win + ' Wins!');
+    }
+
+    win = this.checkHorizontal();
+    if (win !== null) {
+      alert(win + ' Wins!');
+    }
+
+    win = this.checkLeftDiagonal();
+    if (win !== null) {
+      alert(win + ' Wins!');
+    }
+
+    win = this.checkRightDiagonal();
+    if (win !== null) {
+      alert(win + ' Wins!');
     }
   };
 
@@ -133,8 +161,8 @@ class Game {
       let player1Count = 0;
       let player2Count = 0;
       for (let j = 0; j < this.gameBoard.grid[0].length; j++) {
-        if (this.gameBoard.grid[i][j] !== null) {
-          if (this.gameBoard.grid[i][j].value == this.player1.value) {
+        if (this.gameBoard.grid[i][j].gamePiece !== null) {
+          if (this.gameBoard.grid[i][j].gamePiece.value == this.player1.value) {
             player1Count++;
           } else {
             player2Count++;
@@ -157,8 +185,8 @@ class Game {
       let player1Count = 0;
       let player2Count = 0;
       for (let j = 0; j < this.gameBoard.grid[0].length; j++) {
-        if (this.gameBoard.grid[j][i] !== null) {
-          if (this.gameBoard.grid[j][i].value == this.player1.value) {
+        if (this.gameBoard.grid[j][i].gamePiece !== null) {
+          if (this.gameBoard.grid[j][i].gamePiece.value == this.player1.value) {
             player1Count++;
           } else {
             player2Count++;
@@ -182,8 +210,8 @@ class Game {
     let i = 0;
     let j = 0;
     while (i < this.gameBoard.grid.length) {
-      if (this.gameBoard.grid[i][j] !== null) {
-        if (this.gameBoard.grid[i][j].value == this.player1.value) {
+      if (this.gameBoard.grid[i][j].gamePiece !== null) {
+        if (this.gameBoard.grid[i][j].gamePiece.value == this.player1.value) {
           player1Count++;
         } else {
           player2Count++;
@@ -208,8 +236,8 @@ class Game {
     let i = 0;
     let j = this.gameBoard.grid.length - 1;
     while (i < this.gameBoard.grid.length) {
-      if (this.gameBoard.grid[i][j] !== null) {
-        if (this.gameBoard.grid[i][j].value == this.player1.value) {
+      if (this.gameBoard.grid[i][j].gamePiece !== null) {
+        if (this.gameBoard.grid[i][j].gamePiece.value == this.player1.value) {
           player1Count++;
         } else {
           player2Count++;
