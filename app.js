@@ -55,8 +55,16 @@ class Cell {
     return cell;
   };
 
+  checkValidSelection = () => {
+    return this.gamePiece == null;
+  };
+
   onClick = () => {
-    game.selectPosition(this.x, this.y);
+    if (this.checkValidSelection()) {
+      game.selectPosition(this.x, this.y);
+    } else {
+      alert('Invalid Selection');
+    }
   };
 }
 
@@ -108,10 +116,6 @@ class Game {
     } else {
       this.currentPlayer = this.player1;
     }
-  };
-
-  checkValidSelection = (x, y) => {
-    return this.gameBoard.grid[x][y] == null;
   };
 
   checkWinner = () => {
