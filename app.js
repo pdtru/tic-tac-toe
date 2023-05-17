@@ -1,17 +1,75 @@
 class GameBoard {
   constructor() {
     this.grid = [
-      [null, null, null],
-      [null, null, null],
-      [null, null, null],
+      [new Cell(0, 0), new Cell(0, 1), new Cell(0, 2)],
+      [new Cell(1, 0), new Cell(1, 1), new Cell(1, 2)],
+      [new Cell(2, 0), new Cell(2, 1), new Cell(2, 2)],
     ];
   }
+
+  render() {
+    const gameBoardContainer = document.createElement('div');
+    gameBoardContainer.className = 'game-board-container';
+
+    const gameBoard = document.createElement('div');
+    gameBoard.className = 'game-board';
+
+    for (let i = 0; i < this.grid.length; i++) {
+      for (let j = 0; j < this.grid.length; j++) {
+        gameBoard.append(this.grid[i][j].render());
+      }
+    }
+
+    gameBoardContainer.appendChild(gameBoard);
+    gameContainer.innerHTML = '';
+    gameContainer.appendChild(gameBoardContainer);
+    return gameBoardContainer;
+  }
+}
+
+class Cell {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.gamePiece = null;
+  }
+
+  render = () => {
+    const cell = document.createElement('div');
+    cell.onclick = this.onClick;
+
+    if (this.y == 1) {
+      cell.style.borderLeftStyle = 'solid';
+      cell.style.borderRightStyle = 'solid';
+    }
+
+    if (this.x == 1) {
+      cell.style.borderTopStyle = 'solid';
+      cell.style.borderBottomStyle = 'solid';
+    }
+
+    if (this.gamePiece !== null) {
+      cell.appendChild(this.gamePiece.render());
+    }
+
+    return cell;
+  };
+
+  onClick = () => {
+    game.selectPosition(this.x, this.y);
+  };
 }
 
 class GamePiece {
   constructor(value) {
     this.value = value;
   }
+
+  render = () => {
+    const piece = document.createElement('p');
+    piece.innerText = this.value;
+    return piece;
+  };
 }
 
 class Player {
@@ -25,15 +83,23 @@ class Game {
     this.gameBoard = new GameBoard();
   }
 
+  render = () => {
+    this.gameBoard.render();
+  };
+
   startGame = () => {
     this.gameBoard = new GameBoard();
     this.player1 = new Player('x');
     this.player2 = new Player('o');
     this.currentPlayer = this.player1;
+    this.render();
   };
 
   selectPosition = (x, y) => {
-    this.gameBoard.grid[x][y] = new GamePiece(this.currentPlayer.value);
+    this.gameBoard.grid[x][y].gamePiece = new GamePiece(
+      this.currentPlayer.value
+    );
+    this.render();
   };
 
   nextPlayer = () => {
@@ -173,50 +239,6 @@ class HeaderFactory {
   }
 }
 
-class GameBoardFactory {
-  createGameBoard() {
-    const gameBoardContainer = document.createElement('div');
-    gameBoardContainer.className = 'game-board-container';
-
-    const gameBoard = document.createElement('div');
-    gameBoard.className = 'game-board';
-
-    const cell0 = document.createElement('div');
-    cell0.className = 'cell';
-    const cell1 = document.createElement('div');
-    cell1.className = 'cell';
-    const cell2 = document.createElement('div');
-    cell2.className = 'cell';
-    const cell3 = document.createElement('div');
-    cell3.className = 'cell';
-    const cell4 = document.createElement('div');
-    cell4.className = 'cell';
-    const cell5 = document.createElement('div');
-    cell5.className = 'cell';
-    const cell6 = document.createElement('div');
-    cell6.className = 'cell';
-    const cell7 = document.createElement('div');
-    cell7.className = 'cell';
-    const cell8 = document.createElement('div');
-    cell8.className = 'cell';
-
-    gameBoard.append(
-      cell0,
-      cell1,
-      cell2,
-      cell3,
-      cell4,
-      cell5,
-      cell6,
-      cell7,
-      cell8
-    );
-
-    gameBoardContainer.appendChild(gameBoard);
-    return gameBoardContainer;
-  }
-}
-
 class FooterFactory {
   createFooter() {
     const footerContainer = document.createElement('footer');
@@ -239,14 +261,10 @@ class FooterFactory {
 
 const body = document.body;
 const header = new HeaderFactory();
-const gameBoard = new GameBoardFactory();
+const gameContainer = document.createElement('div');
+gameContainer.className = 'game-container';
 const footer = new FooterFactory();
-
-body.append(
-  header.createHeader(),
-  gameBoard.createGameBoard(),
-  footer.createFooter()
-);
+body.append(header.createHeader(), gameContainer, footer.createFooter());
 
 const game = new Game();
 game.startGame();
