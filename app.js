@@ -37,6 +37,9 @@ class Cell {
   render = () => {
     const cell = document.createElement('div');
     cell.onclick = this.onClick;
+    cell.style.display = 'flex';
+    cell.style.justifyContent = 'center';
+    cell.style.alignItems = 'center';
 
     if (this.y == 1) {
       cell.style.borderLeftStyle = 'solid';
@@ -63,7 +66,7 @@ class Cell {
     if (this.checkValidSelection()) {
       game.selectPosition(this.x, this.y);
     } else {
-      alert('Invalid Selection');
+      alert('Please choose an empty cell.');
     }
   };
 }
@@ -75,6 +78,12 @@ class GamePiece {
 
   render = () => {
     const piece = document.createElement('p');
+    piece.className = 'piece';
+    if ((piece.innerText = this.value == '🞨')) {
+      piece.style.color = '#4FC3F7';
+    } else {
+      piece.style.color = '#FFF176';
+    }
     piece.innerText = this.value;
     return piece;
   };
@@ -97,10 +106,18 @@ class Game {
 
   startGame = () => {
     this.gameBoard = new GameBoard();
-    this.player1 = new Player('x');
-    this.player2 = new Player('o');
+    this.player1 = new Player('🞨');
+    this.player2 = new Player('○');
     this.currentPlayer = this.player1;
     this.render();
+  };
+
+  nextPlayer = () => {
+    if (this.currentPlayer == this.player1) {
+      this.currentPlayer = this.player2;
+    } else {
+      this.currentPlayer = this.player1;
+    }
   };
 
   selectPosition = (x, y) => {
@@ -109,17 +126,12 @@ class Game {
     );
     this.render();
     this.nextPlayer();
-    this.checkWinner();
+    const win = this.checkWinner();
+    if (win) {
+      return;
+    }
     if (this.checkTie()) {
       alert('Tie!');
-    }
-  };
-
-  nextPlayer = () => {
-    if (this.currentPlayer == this.player1) {
-      this.currentPlayer = this.player2;
-    } else {
-      this.currentPlayer = this.player1;
     }
   };
 
@@ -137,29 +149,31 @@ class Game {
   checkWinner = () => {
     let win = this.checkVertical();
     if (win !== null) {
-      alert(win + ' Wins!');
+      alert(win + ' wins!');
     }
 
     win = this.checkHorizontal();
     if (win !== null) {
-      alert(win + ' Wins!');
+      alert(win + ' wins!');
     }
 
     win = this.checkLeftDiagonal();
     if (win !== null) {
-      alert(win + ' Wins!');
+      alert(win + ' wins!');
     }
 
     win = this.checkRightDiagonal();
     if (win !== null) {
-      alert(win + ' Wins!');
+      alert(win + ' wins!');
     }
+
+    return win !== null;
   };
 
   checkVertical = () => {
+    let player1Count = 0;
+    let player2Count = 0;
     for (let i = 0; i < this.gameBoard.grid.length; i++) {
-      let player1Count = 0;
-      let player2Count = 0;
       for (let j = 0; j < this.gameBoard.grid[0].length; j++) {
         if (this.gameBoard.grid[i][j].gamePiece !== null) {
           if (this.gameBoard.grid[i][j].gamePiece.value == this.player1.value) {
@@ -181,9 +195,9 @@ class Game {
   };
 
   checkHorizontal = () => {
+    let player1Count = 0;
+    let player2Count = 0;
     for (let i = 0; i < this.gameBoard.grid.length; i++) {
-      let player1Count = 0;
-      let player2Count = 0;
       for (let j = 0; j < this.gameBoard.grid[0].length; j++) {
         if (this.gameBoard.grid[j][i].gamePiece !== null) {
           if (this.gameBoard.grid[j][i].gamePiece.value == this.player1.value) {
@@ -262,9 +276,18 @@ class HeaderFactory {
     const headerContainer = document.createElement('nav');
     headerContainer.className = 'header-container';
 
+    const blueLetter = document.createElement('span');
+    blueLetter.innerText = 'a';
+    blueLetter.style.color = '#4FC3F7';
+
+    const yellowLetter = document.createElement('span');
+    yellowLetter.innerText = 'o';
+    yellowLetter.style.color = '#FFF176';
+
     const header = document.createElement('div');
     header.className = 'header';
-    header.innerText = 'Tic Tac Toe';
+    header.innerText =
+      'Tic T' + blueLetter.innerText + 'c T' + yellowLetter.innerText + 'e';
 
     headerContainer.appendChild(header);
     return headerContainer;
@@ -277,7 +300,7 @@ class FooterFactory {
     footerContainer.className = 'footer';
 
     const footer = document.createElement('p');
-    footer.innerHTML = 'Copyright © 2023 pdtru ';
+    footer.innerHTML = 'Copyright © 2023 pdtru&nbsp';
     footerContainer.appendChild(footer);
 
     const github = document.createElement('a');
