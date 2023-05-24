@@ -276,21 +276,36 @@ class HeaderFactory {
     const headerContainer = document.createElement('nav');
     headerContainer.className = 'header-container';
 
-    const blueLetter = document.createElement('span');
-    blueLetter.innerText = 'a';
-    blueLetter.style.color = '#4FC3F7';
-
-    const yellowLetter = document.createElement('span');
-    yellowLetter.innerText = 'o';
-    yellowLetter.style.color = '#FFF176';
-
     const header = document.createElement('div');
     header.className = 'header';
-    header.innerText =
-      'Tic T' + blueLetter.innerText + 'c T' + yellowLetter.innerText + 'e';
+    header.innerHTML = 'Tic Tac Toe';
+    header.innerHTML = header.innerHTML.replace(
+      'o',
+      '<span style="color: #FFF176; background-color:#2c2e31; ">o</span>'
+    );
+    header.innerHTML = header.innerHTML.replace(
+      'a',
+      '<span style="color: #4FC3F7; background-color:#2c2e31; ">a</span>'
+    );
 
     headerContainer.appendChild(header);
     return headerContainer;
+  }
+}
+
+class GameTextFactory {
+  createGameText(player) {
+    const gameTextConatiner = document.createElement('div');
+    gameTextConatiner.className = 'game-text-container';
+
+    const gameText = document.createElement('div');
+    gameText.innerHTML = `Player ${player}'s Turn`;
+    gameText.innerHTML = gameText.innerHTML.replace(
+      player,
+      `<span style="color: #4FC3F7; background-color:#323437; ">${player}</span>`
+    );
+    gameTextConatiner.appendChild(gameText);
+    return gameTextConatiner;
   }
 }
 
@@ -316,10 +331,16 @@ class FooterFactory {
 
 const body = document.body;
 const header = new HeaderFactory();
+const gameText = new GameTextFactory();
 const gameContainer = document.createElement('div');
 gameContainer.className = 'game-container';
 const footer = new FooterFactory();
-body.append(header.createHeader(), gameContainer, footer.createFooter());
+body.append(
+  header.createHeader(),
+  gameText.createGameText('🞨'),
+  gameContainer,
+  footer.createFooter()
+);
 
 const game = new Game();
 game.startGame();
