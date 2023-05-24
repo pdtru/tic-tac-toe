@@ -96,14 +96,14 @@ class Player {
 class Game {
   constructor() {
     this.gameBoard = new GameBoard();
-    this.currentPlayerText = new CurrentPlayerText();
+    this.gameText = new GameText();
   }
 
   render = () => {
     gameContainer.innerHTML = '';
-    const playerTextNode = this.currentPlayerText.render(this.currentPlayer);
+    const gameTextNode = this.gameText.render(this.currentPlayer);
     const gameBoardNode = this.gameBoard.render();
-    gameContainer.appendChild(playerTextNode);
+    gameContainer.appendChild(gameTextNode);
     gameContainer.appendChild(gameBoardNode);
   };
 
@@ -153,25 +153,25 @@ class Game {
     let win = this.checkVertical();
 
     if (win !== null) {
-      alert(win + ' wins!');
+      alert(`Player ${win} wins!`);
       return true;
     }
 
     win = this.checkHorizontal();
     if (win !== null) {
-      alert(win + ' wins!');
+      alert(`Player ${win} wins!`);
       return true;
     }
 
     win = this.checkLeftDiagonal();
     if (win !== null) {
-      alert(win + ' wins!');
+      alert(`Player ${win} wins!`);
       return true;
     }
 
     win = this.checkRightDiagonal();
     if (win !== null) {
-      alert(win + ' wins!');
+      alert(`Player ${win} wins!`);
       return true;
     }
 
@@ -294,7 +294,7 @@ class HeaderFactory {
   }
 }
 
-class CurrentPlayerText {
+class GameText {
   render(player) {
     const gameTextContainer = document.createElement('div');
     gameTextContainer.className = 'game-text-container';
