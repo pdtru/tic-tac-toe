@@ -42,6 +42,7 @@ body {
 /* game board */
 .game-container {
   display: flex;
+  flex-direction: column;
   flex: 1;
 }
 .game-board-container {

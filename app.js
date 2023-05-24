@@ -21,8 +21,6 @@ class GameBoard {
     }
 
     gameBoardContainer.appendChild(gameBoard);
-    gameContainer.innerHTML = '';
-    gameContainer.appendChild(gameBoardContainer);
     return gameBoardContainer;
   }
 }
@@ -98,10 +96,15 @@ class Player {
 class Game {
   constructor() {
     this.gameBoard = new GameBoard();
+    this.currentPlayerText = new CurrentPlayerText();
   }
 
   render = () => {
-    this.gameBoard.render();
+    gameContainer.innerHTML = '';
+    const playerTextNode = this.currentPlayerText.render(this.currentPlayer);
+    const gameBoardNode = this.gameBoard.render();
+    gameContainer.appendChild(playerTextNode);
+    gameContainer.appendChild(gameBoardNode);
   };
 
   startGame = () => {
@@ -124,8 +127,8 @@ class Game {
     this.gameBoard.grid[x][y].gamePiece = new GamePiece(
       this.currentPlayer.value
     );
-    this.render();
     this.nextPlayer();
+    this.render();
     const win = this.checkWinner();
     if (win) {
       return;
@@ -148,35 +151,41 @@ class Game {
 
   checkWinner = () => {
     let win = this.checkVertical();
+
     if (win !== null) {
       alert(win + ' wins!');
+      return true;
     }
 
     win = this.checkHorizontal();
     if (win !== null) {
       alert(win + ' wins!');
+      return true;
     }
 
     win = this.checkLeftDiagonal();
     if (win !== null) {
       alert(win + ' wins!');
+      return true;
     }
 
     win = this.checkRightDiagonal();
     if (win !== null) {
       alert(win + ' wins!');
+      return true;
     }
 
-    return win !== null;
+    return false;
   };
 
-  checkVertical = () => {
-    let player1Count = 0;
-    let player2Count = 0;
+  checkHorizontal = () => {
     for (let i = 0; i < this.gameBoard.grid.length; i++) {
-      for (let j = 0; j < this.gameBoard.grid[0].length; j++) {
+      let player1Count = 0;
+      let player2Count = 0;
+      for (let j = 0; j < this.gameBoard.grid.length; j++) {
         if (this.gameBoard.grid[i][j].gamePiece !== null) {
-          if (this.gameBoard.grid[i][j].gamePiece.value == this.player1.value) {
+          const gamePiece = this.gameBoard.grid[i][j].gamePiece;
+          if (gamePiece.value == this.player1.value) {
             player1Count++;
           } else {
             player2Count++;
@@ -188,16 +197,16 @@ class Game {
         return this.player1.value;
       } else if (player2Count == 3) {
         return this.player2.value;
-      } else {
-        return null;
       }
     }
+
+    return null;
   };
 
-  checkHorizontal = () => {
-    let player1Count = 0;
-    let player2Count = 0;
+  checkVertical = () => {
     for (let i = 0; i < this.gameBoard.grid.length; i++) {
+      let player1Count = 0;
+      let player2Count = 0;
       for (let j = 0; j < this.gameBoard.grid[0].length; j++) {
         if (this.gameBoard.grid[j][i].gamePiece !== null) {
           if (this.gameBoard.grid[j][i].gamePiece.value == this.player1.value) {
@@ -210,12 +219,13 @@ class Game {
 
       if (player1Count == 3) {
         return this.player1.value;
-      } else if (player2Count == 3) {
+      }
+      if (player2Count == 3) {
         return this.player2.value;
-      } else {
-        return null;
       }
     }
+
+    return null;
   };
 
   checkLeftDiagonal = () => {
@@ -279,33 +289,27 @@ class HeaderFactory {
     const header = document.createElement('div');
     header.className = 'header';
     header.innerHTML = 'Tic Tac Toe';
-    header.innerHTML = header.innerHTML.replace(
-      'o',
-      '<span style="color: #FFF176; background-color:#2c2e31; ">o</span>'
-    );
-    header.innerHTML = header.innerHTML.replace(
-      'a',
-      '<span style="color: #4FC3F7; background-color:#2c2e31; ">a</span>'
-    );
-
     headerContainer.appendChild(header);
     return headerContainer;
   }
 }
 
-class GameTextFactory {
-  createGameText(player) {
-    const gameTextConatiner = document.createElement('div');
-    gameTextConatiner.className = 'game-text-container';
+class CurrentPlayerText {
+  render(player) {
+    const gameTextContainer = document.createElement('div');
+    gameTextContainer.className = 'game-text-container';
 
     const gameText = document.createElement('div');
-    gameText.innerHTML = `Player ${player}'s Turn`;
+    gameText.innerHTML = `Player ${player.value}'s Turn`;
+
     gameText.innerHTML = gameText.innerHTML.replace(
-      player,
-      `<span style="color: #4FC3F7; background-color:#323437; ">${player}</span>`
+      player.value,
+      `<span style="color: ${
+        player.value == '🞨' ? '#4FC3F7' : '#FFF176'
+      }; background-color:#323437; ">${player.value}</span>`
     );
-    gameTextConatiner.appendChild(gameText);
-    return gameTextConatiner;
+    gameTextContainer.appendChild(gameText);
+    return gameTextContainer;
   }
 }
 
@@ -331,16 +335,10 @@ class FooterFactory {
 
 const body = document.body;
 const header = new HeaderFactory();
-const gameText = new GameTextFactory();
 const gameContainer = document.createElement('div');
 gameContainer.className = 'game-container';
 const footer = new FooterFactory();
-body.append(
-  header.createHeader(),
-  gameText.createGameText('🞨'),
-  gameContainer,
-  footer.createFooter()
-);
+body.append(header.createHeader(), gameContainer, footer.createFooter());
 
 const game = new Game();
 game.startGame();
