@@ -66,6 +66,27 @@ body {
   font-size: 64px;
 }
 
+.restart-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.restart-button {
+  font-size: 16px;
+  color: #36383b;
+  background-color: #646669;
+  border-style: none;
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.restart-button:hover {
+  background-color: #939497;
+  cursor: pointer;
+}
+
 /* footer */
 .footer {
   display: flex;

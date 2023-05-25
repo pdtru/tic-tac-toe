@@ -97,14 +97,21 @@ class Game {
   constructor() {
     this.gameBoard = new GameBoard();
     this.gameText = new GameText();
+    this.restartButton = new RestartButton();
   }
 
   render = () => {
     gameContainer.innerHTML = '';
     const gameTextNode = this.gameText.render(this.currentPlayer);
     const gameBoardNode = this.gameBoard.render();
-    gameContainer.appendChild(gameTextNode);
-    gameContainer.appendChild(gameBoardNode);
+    const restartButtonNode = this.restartButton.render();
+    gameContainer.append(gameTextNode, gameBoardNode, restartButtonNode);
+
+    restartButtonNode.onclick = this.onClick;
+  };
+
+  onClick = () => {
+    this.startGame();
   };
 
   startGame = () => {
@@ -313,6 +320,20 @@ class GameText {
   }
 }
 
+class RestartButton {
+  render() {
+    const restartButtonContainer = document.createElement('div');
+    restartButtonContainer.className = 'restart-button-container';
+
+    const restartButton = document.createElement('button');
+    restartButton.className = 'restart-button';
+    restartButton.innerText = 'Restart';
+
+    restartButtonContainer.appendChild(restartButton);
+    return restartButtonContainer;
+  }
+}
+
 class FooterFactory {
   createFooter() {
     const footerContainer = document.createElement('footer');
@@ -341,4 +362,5 @@ const footer = new FooterFactory();
 body.append(header.createHeader(), gameContainer, footer.createFooter());
 
 const game = new Game();
+
 game.startGame();
