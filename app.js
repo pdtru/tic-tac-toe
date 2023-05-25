@@ -63,8 +63,6 @@ class Cell {
   onClick = () => {
     if (this.checkValidSelection()) {
       game.selectPosition(this.x, this.y);
-    } else {
-      alert('Please choose an empty cell.');
     }
   };
 }
@@ -98,6 +96,7 @@ class Game {
     this.gameBoard = new GameBoard();
     this.gameText = new GameText();
     this.restartButton = new RestartButton();
+    this.playing = true;
   }
 
   render = () => {
@@ -106,7 +105,6 @@ class Game {
     const gameBoardNode = this.gameBoard.render();
     const restartButtonNode = this.restartButton.render();
     gameContainer.append(gameTextNode, gameBoardNode, restartButtonNode);
-
     restartButtonNode.onclick = this.onClick;
   };
 
@@ -130,18 +128,26 @@ class Game {
     }
   };
 
+  endGame = () => {
+    gameContainer.style.pointerEvents = 'none';
+  };
+
   selectPosition = (x, y) => {
-    this.gameBoard.grid[x][y].gamePiece = new GamePiece(
-      this.currentPlayer.value
-    );
-    this.nextPlayer();
-    this.render();
-    const win = this.checkWinner();
-    if (win) {
-      return;
-    }
-    if (this.checkTie()) {
-      alert('Tie!');
+    if (this.playing) {
+      this.gameBoard.grid[x][y].gamePiece = new GamePiece(
+        this.currentPlayer.value
+      );
+      this.nextPlayer();
+      this.render();
+      const win = this.checkWinner();
+      if (win) {
+        this.playing = false;
+        return;
+      }
+      if (this.checkTie()) {
+        this.playing = false;
+        alert('Tie!');
+      }
     }
   };
 
